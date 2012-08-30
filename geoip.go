@@ -9,6 +9,7 @@ Redistributions in binary form must reproduce the above copyright notice, this l
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package gogeo
+
 /*
 #cgo LDFLAGS: -lGeoIP
 #include <stdio.h>
@@ -21,36 +22,38 @@ import "errors"
 import "net"
 
 type GeoIPFlag int
+
 var (
-    Standard = 0
+    Standard    = 0
     MemoryCache = 1
-    CheckCache = 2
-    IndexCache = 2
-    MMapCache = 4
-    )
+    CheckCache  = 2
+    IndexCache  = 2
+    MMapCache   = 4
+)
 
 type GeoIP struct {
     GeoIP *C.GeoIP
 }
 
 type GeoIPRecord struct {
-    CountryCode string
-    CountryCode3 string
-    CountryName string
-    Region string
-    City string
-    PostalCode string
-    Latitude float64
-    Longitude float64
-    AreaCode int
-    CharSet int
-    ContinentCode string
+    CountryCode       string
+    CountryCode3      string
+    CountryName       string
+    Region            string
+    City              string
+    PostalCode        string
+    Latitude          float64
+    Longitude         float64
+    AreaCode          int
+    CharSet           int
+    ContinentCode     string
     CountryConfidence byte
-    RegionConfidence byte
-    CityConfidence byte
-    PostalConfidence byte
-    AccuracyRadius int
+    RegionConfidence  byte
+    CityConfidence    byte
+    PostalConfidence  byte
+    AccuracyRadius    int
 }
+
 func parseGeoIPRecord(c_record *C.GeoIPRecord) *GeoIPRecord {
     if c_record == nil {
         return nil
