@@ -26,17 +26,19 @@ Geographical information from an IP address.
 
 - Look at the unit tests
 
-    package main
-    import "github.com/shanemhansen/gogeo"
-    import "net"
-    import "fmt"
-    
-    func main() {
-        db, err := gogeo.Open("/usr/share/GeoIP/GeoLiteCity.dat", gogeo.MemoryCache)
-        if err != nil {
-            panic(err)
-        }
-        addr, err := net.ResolveIPAddr("ip4", "google.com")
-        record := db.RecordByIPAddr(addr)
-        fmt.Printf("hello, from %s", record.CountryCode)
+```go
+package main
+import "github.com/shanemhansen/gogeo"
+import "net"
+import "fmt"
+
+func main() {
+    db, err := gogeo.Open("/usr/share/GeoIP/GeoLiteCity.dat", gogeo.MemoryCache)
+    if err != nil {
+        panic(err)
+    }
+    addr, err := net.ResolveIPAddr("ip4", "google.com")
+    record := db.RecordByIPAddr(addr)
+    fmt.Printf("hello, from %s", record.CountryCode)
    }
+```
