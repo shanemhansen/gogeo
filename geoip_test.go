@@ -13,12 +13,35 @@ package gogeo
 import "net"
 import "testing"
 
-func TestSomething(t *testing.T) {
+func TestIPv4(t *testing.T) {
     db, err := Open("/usr/share/GeoIP/GeoLiteCity.dat", MemoryCache)
     if err != nil {
         t.Fatal("Coulnd't open database, do you have it installed?")
     }
+    if db.DatabaseEdition() != CITY_EDITION_REV1 {
+        t.Fatal(`gegeo hasn't been tested with this kind of db,
+ proceed at your own risk`)
+    }
     addr, err := net.ResolveIPAddr("ip4", "google.com")
+    record := db.RecordByIPAddr(addr)
+    if record.CountryCode != "US" {
+        t.Fatal("it didn't work")
+    }
+}
+
+func TestIPv6(t *testing.T) {
+    db, err := Open("/usr/share/GeoIP/GeoLiteCityIPv6.dat", MemoryCache)
+    if err != nil {
+        t.Fatal("Coulnd't open database, do you have it installed?")
+    }
+    if db.DatabaseEdition() != CITY_EDITION_REV1_V6 {
+        t.Fatal(`gegeo hasn't been tested with this kind of db,
+ proceed at your own risk`)
+    }
+    addr, err := net.ResolveIPAddr("ip6", "google.com")
+    if err != nil {
+        t.Fatal(err)
+    }
     record := db.RecordByIPAddr(addr)
     if record.CountryCode != "US" {
         t.Fatal("it didn't work")

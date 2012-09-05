@@ -21,16 +21,6 @@ import "unsafe"
 import "errors"
 import "net"
 
-type GeoIPFlag int
-
-var (
-    Standard    = 0
-    MemoryCache = 1
-    CheckCache  = 2
-    IndexCache  = 2
-    MMapCache   = 4
-)
-
 type GeoIP struct {
     GeoIP *C.GeoIP
 }
@@ -76,7 +66,9 @@ func parseGeoIPRecord(c_record *C.GeoIPRecord) *GeoIPRecord {
     record.AccuracyRadius = int(c_record.accuracy_radius)
     return record
 }
-func Open(filename string, flags int) (*GeoIP, error) {
+
+//Open a database located a filename using flags
+func Open(filename string, flags GeoIPOptions) (*GeoIP, error) {
     base := C.CString(filename)
     defer C.free(unsafe.Pointer(base))
     db := C.GeoIP_open(base, C.int(flags))
@@ -87,11 +79,21 @@ func Open(filename string, flags int) (*GeoIP, error) {
     return geoIP, nil
 }
 
+//return a string description of the database
+func (self *GeoIP) Info() string {
+    return C.GoString(C.GeoIP_database_info(self.GeoIP))
+}
+
+//Gracefully close the database
 func (self *GeoIP) Close() {
     if self.GeoIP != nil {
         C.GeoIP_delete(self.GeoIP)
         self.GeoIP = nil
     }
+}
+
+func (self *GeoIP) DatabaseEdition() GeoIPDBType {
+    return GeoIPDBType(C.GeoIP_database_edition(self.GeoIP))
 }
 
 func IPv4ToInt(ip []byte) uint32 {
@@ -111,6 +113,17 @@ func (self *GeoIP) RecordByIPAddr(addr *net.IPAddr) *GeoIPRecord {
         defer C.GeoIPRecord_delete(record)
         return parseGeoIPRecord(record)
     } else if len(ip) == 16 {
+        //having weird problems with cgo and in6_addr, maybe the
+        //typedef is messing it up?
+        addr_buf := C.CString(ip.String())
+        defer C.free(unsafe.Pointer(addr_buf))
+        record := C.GeoIP_record_by_name_v6(self.GeoIP, addr_buf)
+        if record != nil {
+            defer C.GeoIPRecord_delete(record)
+            return parseGeoIPRecord(record)
+        }
+        return nil
+
     }
     return nil
 }

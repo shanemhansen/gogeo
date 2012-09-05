@@ -6,6 +6,7 @@ Geographical information from an IP address.
 ### Features
 
 - IPv4 support
+- IPv6 support
 - GeoRecord support
 - Unlike other libraries, doesn't read the whole database into memory
 - Fine grained control over database open modes, caching, etc.
@@ -13,13 +14,13 @@ Geographical information from an IP address.
 
 ### Limitations
 
-- No IPv6 support yet
 - cgo based (not suitable for app engine deployments)
 
 
 ### Setup
 
 - Install libgeoip1 libgeoip-dev (on ubuntu)
+- Download the geolite city database (either ipv4 or ipv6)
 - go get -u github.com/shanemhansen/gogeo
 
 ### Example usage
