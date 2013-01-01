@@ -106,7 +106,10 @@ func IPv4ToInt(ip []byte) uint32 {
 }
 
 func (self *GeoIP) RecordByIPAddr(addr *net.IPAddr) *GeoIPRecord {
-    ip := addr.IP
+    return self.RecordByIP(addr.IP)
+}
+
+func (self *GeoIP) RecordByIP(ip net.IP) *GeoIPRecord {
     if len(ip) == 4 {
         ipaddr := IPv4ToInt(ip)
         record := C.GeoIP_record_by_ipnum(self.GeoIP, C.ulong(ipaddr))
